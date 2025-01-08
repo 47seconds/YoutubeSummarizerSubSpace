@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSignUpEmailPassword } from '@nhost/react';
 import { UserPlus } from 'lucide-react';
 import { ErrorMessage } from './ErrorMessage';
@@ -74,9 +74,9 @@ export function RegisterForm() {
           </div>
           
           <div className="text-center">
-            <a href="/login" className="text-sm text-indigo-600 hover:text-indigo-500">
+            <Link to="/login" className="text-sm text-indigo-600 hover:text-indigo-500">
               Already have an account? Sign in
-            </a>
+            </Link>
           </div>
         </form>
       </div>
