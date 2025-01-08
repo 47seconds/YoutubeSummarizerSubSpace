@@ -5,6 +5,7 @@ import { Youtube, LogOut } from 'lucide-react';
 import { ErrorMessage } from './ErrorMessage';
 import { nhost } from '../lib/nhost';
 import { SummaryDisplay } from './SummaryDisplay';
+import axios from 'axios';
 
 export function VideoSummary() {
   const [url, setUrl] = useState('');
@@ -88,10 +89,12 @@ export function VideoSummary() {
 
     setLoading(true);
     setError('');
+    setSummary('');
     try {
       const response = await axios.post(import.meta.env.VITE_API_URL, { "youtubeUrl": url });
       setSummary(response.data.summary);
       await saveSummary(url, response.data.summary, response.data.title);
+      setHistory(prev => [...prev, response.data]);
     } catch (err) {
       console.error('Failed to get summary:', err.message);
       setError('Failed to generate summary. Please try again.');
@@ -121,17 +124,17 @@ export function VideoSummary() {
 
       <div className="flex space-x-6">
         {/* History Section */}
-        <div className="w-1/3 max-h-[500px] overflow-y-auto bg-gray-800 rounded-lg p-6 shadow-lg">
-          <h2 className="text-lg font-semibold text-white">History</h2>
+        <div className="w-1/4 flex flex-col rounded-lg p-6 shadow-lg">
+          <h2 className="text-lg font-semibold">History</h2>
           <div className="space-y-2">
             {history.length > 0 ? (
-              history.map((item) => (
+              history.slice().reverse().map((item) => (
                 <button
                   key={item.summary_id}
-                  className="group flex justify-between items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                  className="group flex justify-between items-center p-4 rounded-lg hover:bg-blue-600 text-white transition-colors"
                   onClick={() => setSummary(item.summary_content)}
                 >
-                  <h3 className="text-sm font-medium text-gray-300 group-hover:text-white">{item.title}</h3>
+                  <h3 className="text-sm font-medium text-gray-700 group-hover:text-white">{item.title}</h3>
                 </button>
               ))
             ) : (
@@ -139,6 +142,7 @@ export function VideoSummary() {
             )}
           </div>
         </div>
+
 
         {/* Chat / Summary Section */}
         <div className="flex-1 bg-white rounded-lg p-6 shadow-lg">
